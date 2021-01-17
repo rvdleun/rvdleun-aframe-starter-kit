@@ -18,7 +18,7 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "aframe": "^1.0.4",
+    "aframe": "^1.1.0",
     "html-webpack-reload-plugin": "^2.0.0"
   }
 }
