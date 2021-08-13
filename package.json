@@ -35,7 +35,7 @@
     "aframe-state-component-devtools": "^1.0.1"
   },
   "lint-staged": {
-    "src/**/*.{js}": "eslint --cache --fix",
+    "src/**/*.js": "eslint --cache --fix",
     "src/**/*.{js,css,vue,md,html}": "prettier --write"
   }
 }
