@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "dev": "webpack-dev-server"
+    "dev": "webpack-dev-server",
+    "prepare": "husky install"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +22,7 @@
     "html-webpack-hot-plugin": "^1.2.2",
     "html-webpack-plugin": "^3.2.0",
     "html-webpack-reload-plugin": "^2.0.0",
+    "husky": "^7.0.1",
     "lint-staged": "^11.1.2",
     "prettier": "^2.3.2",
     "webpack": "^4.46.0",
@@ -33,7 +35,7 @@
     "aframe-state-component-devtools": "^1.0.1"
   },
   "lint-staged": {
-    "src/**/*.{js,vue}": "eslint --cache --fix",
+    "src/**/*.{js}": "eslint --cache --fix",
     "src/**/*.{js,css,vue,md,html}": "prettier --write"
   }
 }
