@@ -19,8 +19,14 @@ setTimeout(() => {
         onExit: () => { console.log('Exiting blue') },
         route: "/blue",
     });
+    
+    AFRAME.registerSceneController("url:/scenes/purple.html", {
+        onEnter: () => { console.log('Entering purple') },
+        onExit: () => { console.log('Exiting purple') },
+        route: "/purple",
+    });
 
-    AFRAME.initialiseScenes({
+    AFRAME.initialiseSceneManager({
         defaultRoute: "/red/12"
     });
 });
