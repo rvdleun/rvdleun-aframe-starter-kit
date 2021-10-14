@@ -4,6 +4,26 @@ const scenes = [];
 
 let currentScene = null;
 let parameters = {};
+let currentRenderStrategy;
+
+const RenderStrategies = {
+    visible: {
+        scenes: [],
+
+        onElAvailable: function(el) {
+            this.scenes.push(el);
+            el.setAttribute('visible', false);
+        },
+    
+        onEnter: function(el) {
+            el.setAttribute('visible', true);
+        },
+
+        onExit: function(el) {
+            el.setAttribute('visible', false);
+        }
+    }
+}
 
 function getRouteCommands(route) {
     if (route[0] === "/") {
@@ -45,15 +65,15 @@ AFRAME.navigateToScene = function(route) {
     }
 
     if (currentScene) {
-        currentScene.onExit();
-        currentScene.el.setAttribute("visible", false);
+        currentScene.onExit(currentScene);
+        currentRenderStrategy.onExit(currentScene.el);
     }
 
     window.location.hash = route;
 
     currentScene = newScene;
-    currentScene.el.setAttribute("visible", true);
     currentScene.onEnter({ parameters });
+    currentRenderStrategy.onEnter(currentScene.el);
 
     return true;
 };
@@ -63,10 +83,21 @@ AFRAME.registerSceneController = function(selector, options) {
 }
 
 AFRAME.initialiseSceneManager = function(options) {
+    options = {
+        renderStrategy: 'visible',
+        ...options
+    };
+
     const {
         defaultRoute,
         renderStrategy
     } = options;
+
+    currentRenderStrategy = RenderStrategies[renderStrategy];
+    if (!currentRenderStrategy) {
+        console.error('Unknown render strategy: ', renderStrategy);
+        return;
+    }
 
     return Promise.all(
         registeredSceneControllers.map(async ({ selector, options}) => {
@@ -81,12 +112,10 @@ AFRAME.initialiseSceneManager = function(options) {
                     return false;
                 }
 
-                console.log(page);
                 const html = await page.text();
                 el = document.createElement('a-entity');
                 el.innerHTML = html;
                 document.querySelector('a-scene').appendChild(el);
-                console.log(html);
             } else {
                 el = document.querySelector(selector);
 
@@ -101,7 +130,7 @@ AFRAME.initialiseSceneManager = function(options) {
                 return false;
             }
 
-            el.setAttribute('visible', false);
+            currentRenderStrategy.onElAvailable(el);
         
             const { 
                 onEnter,
