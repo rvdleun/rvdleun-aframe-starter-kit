@@ -27,6 +27,7 @@ setTimeout(() => {
     });
 
     AFRAME.initialiseSceneManager({
-        defaultRoute: "/red/12"
+        defaultRoute: "/red/12",
+        renderStrategy: "dom"
     });
 });

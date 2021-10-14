@@ -7,11 +7,43 @@ let parameters = {};
 let currentRenderStrategy;
 
 const RenderStrategies = {
-    visible: {
-        scenes: [],
+    dom: {
+        activeEl: null,
 
         onElAvailable: function(el) {
-            this.scenes.push(el);
+            const scene = document.querySelector('a-scene');
+            if (scene.contains(el)) {
+                el.parentElement.removeChild(el);
+            }
+        },
+    
+        onEnter: function(el) {
+            const scene = document.querySelector('a-scene');
+
+            const entity = document.createElement('a-entity');
+            entity.innerHTML = el.innerHTML;
+            scene.appendChild(entity);
+
+            this.activeEl = entity;
+        },
+
+        onExit: function(el) {
+            const scene = document.querySelector('a-scene');
+            if (this.activeEl) {
+                scene.removeChild(this.activeEl);
+            }
+
+            this.activeEl = null;
+        }
+    },
+
+    visible: {
+        onElAvailable: function(el) {
+            const scene = document.querySelector('a-scene');
+            if (!scene.contains(el)) {
+                scene.appendChild(el);
+            }
+
             el.setAttribute('visible', false);
         },
     
@@ -115,7 +147,6 @@ AFRAME.initialiseSceneManager = function(options) {
                 const html = await page.text();
                 el = document.createElement('a-entity');
                 el.innerHTML = html;
-                document.querySelector('a-scene').appendChild(el);
             } else {
                 el = document.querySelector(selector);
 
